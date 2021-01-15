@@ -63,7 +63,7 @@ window.addEventListener('DOMContentLoaded', () => {
         modal.classList.remove('hide');
         // modal.classList.toggle('show');
         document.body.style.overflow = 'hidden';
-        //clearInterval(modalTimerId);
+        clearInterval(modalTimerId);
     }
 
     function closeModal() {
@@ -80,10 +80,10 @@ window.addEventListener('DOMContentLoaded', () => {
     //     document.body.style.overflow = '';
     // });
 
-    modalCloseBtn.addEventListener('click', closeModal);
+    // modalCloseBtn.addEventListener('click', closeModal);
 
     modal.addEventListener('click', (e) => {
-        if(e.target === modal) {
+        if(e.target === modal || e.target.getAttribute('data-close') === '') {
             // modal.classList.add('hide');
             // modal.classList.remove('show');
             // // modal.classList.toggle('show');
@@ -98,7 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // const modalTimerId = setTimeout(openModal, 6000);
+     const modalTimerId = setTimeout(openModal, 60000);
 
     function showModalByScroll() {
         if(window.pageYOffset + document.documentElement.clientHeight >=
@@ -181,7 +181,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const forms = document.querySelectorAll('form');
 
     const message = {
-        loading: 'Загрузка',
+        loading: 'img/form/spinner.svg',
         success: 'Спасибо! Скоро будем suck some dick',
         failure: 'Smt g wrng'
     };
@@ -194,10 +194,17 @@ window.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const statuesMessage = document.createElement('div');
-            statuesMessage.classList.add('status');
-            statuesMessage.textContent = message.loading;
-            form.append(statuesMessage);
+            // const statuesMessage = document.createElement('div');
+            const statuesMessage = document.createElement('img');
+            // statuesMessage.classList.add('status');
+            statuesMessage.src = message.loading;
+            // statuesMessage.textContent = message.loading;
+            statuesMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;
+            // form.append(statuesMessage);
+            form.insertAdjacentElement('afterend', statuesMessage);
 
             const request = new XMLHttpRequest();
             request.open('POST', 'server.php');
@@ -224,17 +231,45 @@ window.addEventListener('DOMContentLoaded', () => {
             request.addEventListener('load', () => {
                if (request.status === 200) {
                    console.log(request.response);
-                   statuesMessage.textContent = message.success;
+                   // statuesMessage.textContent = message.success;
+                   showThanksModal(message.success);
                    form.reset();
-                   setTimeout(() => {
-                       statuesMessage.remove();
-                   }, 2000);
+                   statuesMessage.remove();
+                   // setTimeout(() => {
+                   //     statuesMessage.remove();
+                   // }, 2000);
                } else {
-                   statuesMessage.textContent = message.failure;
+                   // statuesMessage.textContent = message.failure;
+                   showThanksModal(message.failure);
                }
             });
 
         });
     }
+
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+
+        prevModalDialog.classList.add('hide');
+        openModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('.modal__dialog');
+        thanksModal.innerHTML = `
+        <div class="modal__content">
+            <div class="modal__close" data-close>&#35</div>
+            <div class="modal__title">${message}</div>
+        </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal)
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 4000);
+    }
+
 
 });

@@ -1,4 +1,4 @@
-//  COMMONJS
+
 
 function myModule() {
     this.hello = function () {
@@ -10,4 +10,4 @@ function myModule() {
     };
 }
 
-module.exports = myModule();
+module.exports = myModule;

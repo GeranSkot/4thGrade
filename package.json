@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/GeranSkot/4thGrade#readme",
   "devDependencies": {
-    "json-server": "^0.16.3"
+    "json-server": "^0.16.3",
+    "tiny-slider": "^2.9.3",
+    "webpack": "^5.18.0",
+    "webpack-cli": "^4.4.0"
   }
 }
